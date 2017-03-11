@@ -1,5 +1,8 @@
 package com.github.binodnme.dao;
 
+import com.github.binodnme.annotation.TenantEM;
+
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 /**
@@ -7,8 +10,12 @@ import javax.persistence.EntityManager;
  */
 public class BaseDAOImpl<T> implements BaseDAO<T> {
 
+    @Inject
+    @TenantEM
+    EntityManager em;
+
     @Override
-    public T save(T entity, EntityManager em) {
+    public T save(T entity) {
         em.persist(entity);
         em.flush();
         return entity;

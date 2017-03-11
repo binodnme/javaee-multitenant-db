@@ -17,7 +17,6 @@ public class EntityManagerFactory {
     private EntityManager emDb2;
 
     public EntityManager createEntityManger(PCUnitName name) {
-
         switch (name) {
             case DB1:
                 return emDb1;
