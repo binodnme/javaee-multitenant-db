@@ -1,0 +1,31 @@
+version: '2'
+services:
+  server:
+    container_name: multidb_server
+    build:
+      context: ./server
+      args:
+        username: ${WILDFLY_USERNAME}
+        password: ${WILDFLY_PASSWORD}
+    ports:
+      - "${SERVER_PORT_WEB}:8080"
+      - "${SERVER_PORT_ADMIN}:9990"
+    command: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0
+
+  db:
+    container_name: multidb_db
+    image: postgres:9.5.5-alpine
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - "./db/data:/var/lib/postgresql/data"
+
+  maven:
+    container_name: multidb_maven
+    image: maven:3.3.9-jdk-8-alpine
+    volumes:
+      - "../:/home/code"
+    working_dir: /home/code
+    command: mvn clean -Dwildfly.hostname=server -Dwildfly.username=${WILDFLY_USERNAME} -Dwildfly.password=${WILDFLY_PASSWORD} wildfly:deploy
+    depends_on:
+      - server
