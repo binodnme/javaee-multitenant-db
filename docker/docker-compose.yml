@@ -11,14 +11,16 @@ services:
       - "${SERVER_PORT_WEB}:8080"
       - "${SERVER_PORT_ADMIN}:9990"
     command: /opt/jboss/wildfly/bin/standalone.sh -b=0.0.0.0 -bmanagement=0.0.0.0
+    depends_on:
+      - db
 
   db:
     container_name: multidb_db
-    image: postgres:9.5.5-alpine
+    build: ./db
     ports:
       - "${DB_PORT}:5432"
     volumes:
-      - "./db/data:/var/lib/postgresql/data"
+      - "./db/data/:/var/lib/postgresql/data"
 
   maven:
     container_name: multidb_maven
